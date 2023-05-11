@@ -1,23 +1,32 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import axios from 'axios';
+import Search from './Search';
+import MovieList from './MovieList';
 import './App.css';
 
 function App() {
+  const [movies, setMovies] = useState([]);
+
+  const searchMovies = async (query) => {
+    const response = await axios.get('http://www.omdbapi.com/', {
+      params: {
+        apikey: '36cbe0b7',
+        s: query,
+      },
+    });
+
+    if (response.data.Search) {
+      setMovies(response.data.Search);
+    } else {
+      setMovies([]);
+    }
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <h1>Movie App</h1>
+      <Search searchMovies={searchMovies} />
+      <MovieList movies={movies} />
     </div>
   );
 }
